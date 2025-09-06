@@ -12,6 +12,7 @@ import EvidencePanel from '@/components/game/EvidencePanel';
 import VotingPanel from '@/components/game/VotingPanel';
 import CharacterAssignment from '@/components/game/CharacterAssignment';
 import Chat from '@/components/game/Chat';
+import { useSocket } from '@/hooks/useSocket';
 
 const GamePage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -19,6 +20,16 @@ const GamePage: React.FC = () => {
   const { user } = useAuthStore();
   const { currentRoom } = useGameRoomStore();
   const { gameState, initializeGame, resetGame } = useGameStore();
+  
+  // WebSocket接続
+  const { 
+    isConnected, 
+    connectionError, 
+    on, 
+    off, 
+    sendGameState, 
+    sendPhaseChange 
+  } = useSocket(roomId || '', user?.id || '');
 
   // ゲーム初期化
   useEffect(() => {
@@ -34,6 +45,46 @@ const GamePage: React.FC = () => {
       resetGame();
     };
   }, [roomId, user, currentRoom, initializeGame, resetGame]);
+
+  // WebSocketイベントリスナーの設定
+  useEffect(() => {
+    if (!isConnected) return;
+
+    // ゲーム状態の同期
+    const handleGameStateUpdate = (newGameState: any) => {
+      // サーバーからの状態更新を処理
+      console.log('ゲーム状態更新を受信:', newGameState);
+    };
+
+    // フェーズ変更の同期
+    const handlePhaseChange = (phase: string) => {
+      console.log('フェーズ変更を受信:', phase);
+    };
+
+    // エラーハンドリング
+    const handleError = (error: string) => {
+      console.error('WebSocketエラー:', error);
+    };
+
+    // イベントリスナーを登録
+    on('game_state_updated', handleGameStateUpdate);
+    on('phase_changed', handlePhaseChange);
+    on('error', handleError);
+
+    // クリーンアップ
+    return () => {
+      off('game_state_updated', handleGameStateUpdate);
+      off('phase_changed', handlePhaseChange);
+      off('error', handleError);
+    };
+  }, [isConnected, on, off]);
+
+  // ゲーム状態の変更をサーバーに送信
+  useEffect(() => {
+    if (isConnected && gameState) {
+      sendGameState(gameState);
+    }
+  }, [isConnected, gameState, sendGameState]);
 
   const handleExitGame = () => {
     resetGame();
@@ -63,6 +114,19 @@ const GamePage: React.FC = () => {
             🎮 ゲーム画面
           </h1>
           <div className="flex items-center gap-4">
+            {/* 接続状態表示 */}
+            <div className={`text-sm px-3 py-1 rounded-full ${
+              isConnected 
+                ? 'text-green-300 bg-green-800' 
+                : 'text-red-300 bg-red-800'
+            }`}>
+              {isConnected ? '🟢 接続中' : '🔴 切断中'}
+            </div>
+            {connectionError && (
+              <div className="text-sm text-red-300 bg-red-800 px-3 py-1 rounded-full">
+                エラー: {connectionError}
+              </div>
+            )}
             <div className="text-sm text-mystery-300 bg-mystery-800 px-3 py-1 rounded-full">
               ルーム: {currentRoom?.name || 'Unknown'}
             </div>
