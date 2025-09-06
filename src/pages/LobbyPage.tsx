@@ -1,14 +1,34 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 import Card, { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useAuthStore } from '@/stores/authStore';
 
 const LobbyPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-mystery-900 p-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-mystery font-bold text-center mb-8 text-accent-500">
-          ロビー
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-mystery font-bold text-accent-500">
+            ロビー
+          </h1>
+          <div className="flex items-center gap-4">
+            <span className="text-mystery-300">
+              ようこそ、{user?.displayName}さん
+            </span>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              ログアウト
+            </Button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* シナリオ一覧 */}
