@@ -2,11 +2,20 @@
 
 ## 概要
 
-Murder Mystery PlatformのAPI仕様書です。現在はデモモードでの実装のため、実際のAPIエンドポイントは未実装です。
+Murder Mystery PlatformのAPI仕様書です。
+
+## 実装状況
+
+- ✅ **実装済み** - 完全に実装され、動作確認済み
+- 🚧 **実装中** - 部分的に実装済み、開発中
+- ❌ **未実装** - まだ実装されていない
+- 🔄 **要修正** - 実装済みだが修正が必要
+
+**注意**: 現在はデモモードでの実装のため、実際のAPIエンドポイントは未実装です。フロントエンド側でデモデータを使用して動作しています。
 
 ## 認証API
 
-### ログイン
+### ログイン ❌
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -30,7 +39,7 @@ Content-Type: application/json
 }
 ```
 
-### ログアウト
+### ログアウト ❌
 ```http
 POST /api/auth/logout
 Authorization: Bearer <token>
@@ -38,7 +47,7 @@ Authorization: Bearer <token>
 
 ## ゲームルームAPI
 
-### ルーム一覧取得
+### ルーム一覧取得 ❌
 ```http
 GET /api/rooms
 ```
@@ -62,7 +71,7 @@ GET /api/rooms
 }
 ```
 
-### ルーム作成
+### ルーム作成 ❌
 ```http
 POST /api/rooms
 Content-Type: application/json
@@ -75,13 +84,13 @@ Authorization: Bearer <token>
 }
 ```
 
-### ルーム参加
+### ルーム参加 ❌
 ```http
 POST /api/rooms/{roomId}/join
 Authorization: Bearer <token>
 ```
 
-### ルーム退出
+### ルーム退出 ❌
 ```http
 POST /api/rooms/{roomId}/leave
 Authorization: Bearer <token>
@@ -89,13 +98,13 @@ Authorization: Bearer <token>
 
 ## ゲームAPI
 
-### ゲーム開始
+### ゲーム開始 ❌
 ```http
 POST /api/games/{roomId}/start
 Authorization: Bearer <token>
 ```
 
-### ゲーム状態取得
+### ゲーム状態取得 ❌
 ```http
 GET /api/games/{roomId}/state
 Authorization: Bearer <token>
@@ -121,7 +130,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### フェーズ変更
+### フェーズ変更 ❌
 ```http
 POST /api/games/{roomId}/phase
 Content-Type: application/json
@@ -132,7 +141,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### 証拠追加
+### 証拠追加 ❌
 ```http
 POST /api/games/{roomId}/evidence
 Content-Type: application/json
@@ -146,7 +155,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### 投票
+### 投票 ❌
 ```http
 POST /api/games/{roomId}/vote
 Content-Type: application/json
@@ -159,7 +168,7 @@ Authorization: Bearer <token>
 
 ## WebSocket API
 
-### 接続
+### 接続 🚧
 ```javascript
 const socket = io('ws://localhost:3001', {
   auth: {
@@ -169,7 +178,7 @@ const socket = io('ws://localhost:3001', {
 });
 ```
 
-### イベント
+### イベント 🚧
 
 #### サーバーからクライアント
 - `game_state_updated` - ゲーム状態更新
@@ -190,7 +199,7 @@ const socket = io('ws://localhost:3001', {
 - `evidence_add` - 証拠送信
 - `phase_change` - フェーズ変更送信
 
-## エラーレスポンス
+## エラーレスポンス ❌
 
 ```json
 {
@@ -213,7 +222,7 @@ const socket = io('ws://localhost:3001', {
 - `ROOM_FULL` - ルームが満員
 - `ALREADY_VOTED` - 既に投票済み
 
-## 認証
+## 認証 ❌
 
 APIリクエストにはJWTトークンが必要です。トークンはAuthorizationヘッダーに含めて送信してください。
 
@@ -221,13 +230,13 @@ APIリクエストにはJWTトークンが必要です。トークンはAuthoriz
 Authorization: Bearer <your-jwt-token>
 ```
 
-## レート制限
+## レート制限 ❌
 
 - 認証API: 10回/分
 - ゲームAPI: 100回/分
 - WebSocket: 制限なし
 
-## バージョニング
+## バージョニング ❌
 
 APIのバージョンはURLパスに含まれます。
 
