@@ -60,7 +60,7 @@ const GamePage: React.FC = () => {
         {/* ヘッダー */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-mystery font-bold text-accent-500">
-            ゲーム画面
+            🎮 ゲーム画面
           </h1>
           <div className="flex items-center gap-4">
             <div className="text-sm text-mystery-300 bg-mystery-800 px-3 py-1 rounded-full">
