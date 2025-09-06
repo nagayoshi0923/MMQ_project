@@ -15,12 +15,24 @@ export const useSocket = (roomId: string, userId: string) => {
     setConnectionError(null);
 
     try {
+      // デモモードでは接続をスキップ
+      if (import.meta.env.MODE === 'development') {
+        console.log('デモモード: WebSocket接続をスキップ');
+        setIsConnected(false); // デモモードでは接続なしとして扱う
+        return;
+      }
+
       await socketManager.connect(roomId, userId);
       setIsConnected(true);
       socketManager.joinRoom(roomId, userId);
     } catch (error) {
       console.error('WebSocket接続失敗:', error);
       setConnectionError(error instanceof Error ? error.message : '接続に失敗しました');
+      // デモモードでは接続エラーを無視
+      if (import.meta.env.MODE === 'development') {
+        console.log('デモモード: 接続エラーを無視');
+        setConnectionError(null);
+      }
     } finally {
       isConnecting.current = false;
     }

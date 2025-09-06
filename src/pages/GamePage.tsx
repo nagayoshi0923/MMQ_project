@@ -35,18 +35,45 @@ const GamePage: React.FC = () => {
   useEffect(() => {
     console.log('GamePage初期化チェック:', { roomId, user: !!user, currentRoom: !!currentRoom });
     
-    if (!roomId || !user || !currentRoom) {
-      console.log('初期化条件が満たされていません:', { roomId, user: !!user, currentRoom: !!currentRoom });
+    if (!roomId || !user) {
+      console.log('基本条件が満たされていません:', { roomId, user: !!user });
       return;
     }
 
+    // currentRoomがnullの場合はデモ用のルームデータを作成
+    let roomData = currentRoom;
+    if (!roomData) {
+      console.log('currentRoomがnullのため、デモ用ルームデータを作成します');
+      const { setCurrentRoom } = useGameRoomStore.getState();
+      roomData = {
+        id: roomId,
+        name: 'デモルーム',
+        roomCode: 'DEMO123',
+        scenarioId: 'scenario-1',
+        maxPlayers: 6,
+        currentPlayers: [
+          {
+            id: user.id,
+            name: user.displayName,
+            isHost: true,
+            isReady: true,
+            joinedAt: new Date()
+          }
+        ],
+        isGameStarted: true,
+        createdAt: new Date(),
+        hostId: user.id
+      };
+      setCurrentRoom(roomData);
+    }
+
     // デモ用のゲーム初期化
-    const scenario = demoScenarios.find(s => s.id === currentRoom.scenarioId);
-    console.log('シナリオ検索結果:', { scenarioId: currentRoom.scenarioId, scenario: !!scenario });
+    const scenario = demoScenarios.find(s => s.id === roomData.scenarioId);
+    console.log('シナリオ検索結果:', { scenarioId: roomData.scenarioId, scenario: !!scenario });
     
     if (scenario) {
       console.log('ゲーム初期化を実行します');
-      initializeGame(roomId, currentRoom.scenarioId, currentRoom.currentPlayers);
+      initializeGame(roomId, roomData.scenarioId, roomData.currentPlayers);
     } else {
       console.log('シナリオが見つかりません');
     }
@@ -56,7 +83,7 @@ const GamePage: React.FC = () => {
     };
   }, [roomId, user, currentRoom, initializeGame, resetGame]);
 
-  // WebSocketイベントリスナーの設定
+  // WebSocketイベントリスナーの設定（デモモードでは無効）
   useEffect(() => {
     if (!isConnected) return;
 
@@ -89,7 +116,7 @@ const GamePage: React.FC = () => {
     };
   }, [isConnected, on, off]);
 
-  // ゲーム状態の変更をサーバーに送信
+  // ゲーム状態の変更をサーバーに送信（デモモードでは無効）
   useEffect(() => {
     if (isConnected && gameState) {
       sendGameState(gameState);
@@ -136,11 +163,13 @@ const GamePage: React.FC = () => {
             <div className={`text-sm px-3 py-1 rounded-full ${
               isConnected 
                 ? 'text-green-300 bg-green-800' 
+                : import.meta.env.MODE === 'development'
+                ? 'text-yellow-300 bg-yellow-800'
                 : 'text-red-300 bg-red-800'
             }`}>
-              {isConnected ? '🟢 接続中' : '🔴 切断中'}
+              {isConnected ? '🟢 接続中' : import.meta.env.MODE === 'development' ? '🟡 デモモード' : '🔴 切断中'}
             </div>
-            {connectionError && (
+            {connectionError && import.meta.env.MODE !== 'development' && (
               <div className="text-sm text-red-300 bg-red-800 px-3 py-1 rounded-full">
                 エラー: {connectionError}
               </div>
