@@ -2,14 +2,14 @@
   "name": "Murder Mystery Platform",
   "short_name": "MMQ",
   "description": "オンラインで殺人ミステリーゲームを楽しめるプラットフォーム",
-  "start_url": "/",
+  "start_url": "/MMQ_project/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/vite.svg",
+      "src": "/MMQ_project/vite.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
