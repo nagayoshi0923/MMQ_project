@@ -54,7 +54,7 @@ interface GameStore {
   isConnected: boolean;
   
   // Actions
-  initializeGame: (roomId: string, scenarioId: string, players: any[]) => void;
+  initializeGame: (roomId: string, scenarioId: string) => void;
   setPhase: (phase: GamePhase) => void;
   updateTimer: (timeRemaining: number) => void;
   pauseGame: () => void;
@@ -70,11 +70,11 @@ interface GameStore {
 
 export const useGameStore = create<GameStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       gameState: null,
       isConnected: false,
 
-      initializeGame: (roomId, scenarioId, players) => {
+      initializeGame: (roomId, scenarioId) => {
         // デモ用のキャラクターデータを初期化
         const demoCharacters: Character[] = [
           {

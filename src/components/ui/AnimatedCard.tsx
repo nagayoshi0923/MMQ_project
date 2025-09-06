@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card';
+import Card, { CardContent, CardDescription, CardHeader, CardTitle } from './Card';
 
 interface AnimatedCardProps {
   children: React.ReactNode;
@@ -75,7 +75,6 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({
     visible: {
       ...variants.visible,
       transition: {
-        ...variants.visible.transition,
         delay,
         duration
       }

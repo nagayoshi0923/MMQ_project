@@ -49,7 +49,7 @@ interface GameRoomState {
 
 export const useGameRoomStore = create<GameRoomState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       currentRoom: null,
       chatMessages: [],
       isConnected: false,

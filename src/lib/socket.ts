@@ -10,7 +10,7 @@ class SocketManager {
     return new Promise((resolve, reject) => {
       try {
         // 開発環境では localhost:3001 を使用
-        const serverUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+        const serverUrl = process.env.VITE_SOCKET_URL || 'http://localhost:3001';
         
         this.socket = io(serverUrl, {
           auth: {

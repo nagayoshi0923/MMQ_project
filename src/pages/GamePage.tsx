@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
+// import Input from '@/components/ui/Input';
 import Card, { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameRoomStore } from '@/stores/gameRoomStore';
@@ -27,8 +27,7 @@ const GamePage: React.FC = () => {
     connectionError, 
     on, 
     off, 
-    sendGameState, 
-    sendPhaseChange 
+    sendGameState
   } = useSocket(roomId || '', user?.id || '');
 
   // ゲーム初期化
@@ -73,7 +72,7 @@ const GamePage: React.FC = () => {
     
     if (scenario) {
       console.log('ゲーム初期化を実行します');
-      initializeGame(roomId, roomData.scenarioId, roomData.currentPlayers);
+      initializeGame(roomId, roomData.scenarioId);
     } else {
       console.log('シナリオが見つかりません');
     }
@@ -163,13 +162,13 @@ const GamePage: React.FC = () => {
             <div className={`text-sm px-3 py-1 rounded-full ${
               isConnected 
                 ? 'text-green-300 bg-green-800' 
-                : import.meta.env.MODE === 'development'
+                : process.env.NODE_ENV === 'development'
                 ? 'text-yellow-300 bg-yellow-800'
                 : 'text-red-300 bg-red-800'
             }`}>
-              {isConnected ? '🟢 接続中' : import.meta.env.MODE === 'development' ? '🟡 デモモード' : '🔴 切断中'}
+              {isConnected ? '🟢 接続中' : process.env.NODE_ENV === 'development' ? '🟡 デモモード' : '🔴 切断中'}
             </div>
-            {connectionError && import.meta.env.MODE !== 'development' && (
+            {connectionError && process.env.NODE_ENV !== 'development' && (
               <div className="text-sm text-red-300 bg-red-800 px-3 py-1 rounded-full">
                 エラー: {connectionError}
               </div>

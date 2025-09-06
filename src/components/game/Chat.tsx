@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card, { CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { useGameRoomStore, ChatMessage } from '@/stores/gameRoomStore';
+import { useGameRoomStore } from '@/stores/gameRoomStore';
 import { useAuthStore } from '@/stores/authStore';
 
 interface ChatProps {

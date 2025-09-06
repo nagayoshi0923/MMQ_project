@@ -16,7 +16,7 @@ export const useSocket = (roomId: string, userId: string) => {
 
     try {
       // デモモードでは接続をスキップ
-      if (import.meta.env.MODE === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         console.log('デモモード: WebSocket接続をスキップ');
         setIsConnected(false); // デモモードでは接続なしとして扱う
         return;
@@ -29,7 +29,7 @@ export const useSocket = (roomId: string, userId: string) => {
       console.error('WebSocket接続失敗:', error);
       setConnectionError(error instanceof Error ? error.message : '接続に失敗しました');
       // デモモードでは接続エラーを無視
-      if (import.meta.env.MODE === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         console.log('デモモード: 接続エラーを無視');
         setConnectionError(null);
       }

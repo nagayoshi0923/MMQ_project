@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Card, { CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { useGameStore, Evidence } from '@/stores/gameStore';
+import { useGameStore } from '@/stores/gameStore';
 import { useAuthStore } from '@/stores/authStore';
 
 interface EvidencePanelProps {
