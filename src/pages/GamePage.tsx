@@ -1,35 +1,84 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card, { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useGameStore } from '@/stores/gameStore';
+import { useGameRoomStore } from '@/stores/gameRoomStore';
+import { useAuthStore } from '@/stores/authStore';
+import { demoScenarios } from '@/lib/demoData';
+import GamePhaseManager from '@/components/game/GamePhaseManager';
+import EvidencePanel from '@/components/game/EvidencePanel';
+import VotingPanel from '@/components/game/VotingPanel';
+import CharacterAssignment from '@/components/game/CharacterAssignment';
+import Chat from '@/components/game/Chat';
 
 const GamePage: React.FC = () => {
+  const { roomId } = useParams<{ roomId: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const { currentRoom } = useGameRoomStore();
+  const { gameState, initializeGame, resetGame } = useGameStore();
+
+  // ゲーム初期化
+  useEffect(() => {
+    if (!roomId || !user || !currentRoom) return;
+
+    // デモ用のゲーム初期化
+    const scenario = demoScenarios.find(s => s.id === currentRoom.scenarioId);
+    if (scenario) {
+      initializeGame(roomId, currentRoom.scenarioId, currentRoom.currentPlayers);
+    }
+
+    return () => {
+      resetGame();
+    };
+  }, [roomId, user, currentRoom, initializeGame, resetGame]);
+
+  const handleExitGame = () => {
+    resetGame();
+    navigate('/lobby');
+  };
+
+  if (!gameState) {
+    return (
+      <div className="min-h-screen bg-mystery-900 flex items-center justify-center">
+        <Card className="max-w-md mx-auto text-center">
+          <CardContent>
+            <h2 className="text-xl font-bold text-accent-500 mb-4">ゲームを読み込み中...</h2>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const scenario = demoScenarios.find(s => s.id === gameState.scenarioId);
+
   return (
     <div className="min-h-screen bg-mystery-900 p-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
+        {/* ヘッダー */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-mystery font-bold text-accent-500">
             ゲーム画面
           </h1>
           <div className="flex items-center gap-4">
             <div className="text-sm text-mystery-300 bg-mystery-800 px-3 py-1 rounded-full">
-              フェーズ: 事件概要
+              ルーム: {currentRoom?.name || 'Unknown'}
             </div>
-            <div className="text-sm text-accent-400 bg-accent-900/20 px-3 py-1 rounded-full">
-              残り時間: 05:00
-            </div>
-            <Link to="/lobby">
-              <Button variant="outline" size="sm">
-                退出
-              </Button>
-            </Link>
+            <Button variant="outline" size="sm" onClick={handleExitGame}>
+              退出
+            </Button>
           </div>
         </div>
+
+        {/* フェーズ管理 */}
+        <GamePhaseManager className="mb-6" />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* メインゲームエリア */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
+            {/* 事件概要 */}
             <Card>
               <CardHeader>
                 <CardTitle>事件概要</CardTitle>
@@ -37,13 +86,12 @@ const GamePage: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-mystery-300 leading-relaxed">
-                  昨夜、マンションの一室で殺人事件が発生しました。被害者は...
-                  この事件の謎を解き明かすために、プレイヤーたちは協力して
-                  証拠を集め、容疑者を特定する必要があります。
+                  {scenario?.description || '事件の詳細が読み込まれていません'}
                 </p>
               </CardContent>
             </Card>
             
+            {/* 間取り図 */}
             <Card>
               <CardHeader>
                 <CardTitle>間取り図</CardTitle>
@@ -58,68 +106,21 @@ const GamePage: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* 証拠パネル */}
+            <EvidencePanel />
           </div>
 
           {/* サイドバー */}
           <div className="space-y-6">
+            {/* キャラクター割り当て */}
+            <CharacterAssignment />
+            
+            {/* 投票パネル */}
+            <VotingPanel />
+            
             {/* チャット */}
-            <Card>
-              <CardHeader>
-                <CardTitle>チャット</CardTitle>
-                <CardDescription>プレイヤーと議論しましょう</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-48 bg-mystery-800 rounded-lg p-3 mb-3 overflow-y-auto border border-mystery-600">
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="text-accent-400 font-medium">プレイヤー1:</span>
-                      <span className="text-mystery-300 ml-2">こんにちは！</span>
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-accent-400 font-medium">プレイヤー2:</span>
-                      <span className="text-mystery-300 ml-2">よろしくお願いします</span>
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-accent-400 font-medium">プレイヤー3:</span>
-                      <span className="text-mystery-300 ml-2">事件の詳細を教えてください</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="メッセージを入力..."
-                    className="flex-1"
-                  />
-                  <Button size="sm">
-                    送信
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 投票 */}
-            <Card>
-              <CardHeader>
-                <CardTitle>投票</CardTitle>
-                <CardDescription>容疑者に投票してください</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
-                    容疑者A - 田中太郎
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    容疑者B - 佐藤花子
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    容疑者C - 鈴木一郎
-                  </Button>
-                </div>
-                <div className="mt-4 text-xs text-mystery-400">
-                  投票は議論フェーズで可能になります
-                </div>
-              </CardContent>
-            </Card>
+            <Chat />
           </div>
         </div>
       </div>

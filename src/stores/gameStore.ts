@@ -75,6 +75,64 @@ export const useGameStore = create<GameStore>()(
       isConnected: false,
 
       initializeGame: (roomId, scenarioId, players) => {
+        // デモ用のキャラクターデータを初期化
+        const demoCharacters: Character[] = [
+          {
+            id: 'char-1',
+            name: '田中太郎',
+            role: '容疑者A',
+            description: '被害者の隣人。普段は穏やかな性格だが、最近被害者とトラブルがあった。',
+            alibi: '事件発生時は自宅でテレビを見ていたと主張している。',
+            motive: '被害者との騒音トラブルで激しい口論があった。',
+            isRevealed: false
+          },
+          {
+            id: 'char-2',
+            name: '佐藤花子',
+            role: '容疑者B',
+            description: '被害者の友人。最近被害者と金銭トラブルがあった。',
+            alibi: '事件発生時は友人と電話で話していたと主張している。',
+            motive: '被害者に多額の借金があり、返済を迫られていた。',
+            isRevealed: false
+          },
+          {
+            id: 'char-3',
+            name: '鈴木一郎',
+            role: '容疑者C',
+            description: '被害者の同僚。職場での昇進を巡って対立していた。',
+            alibi: '事件発生時は職場で残業していたと主張している。',
+            motive: '昇進の座を巡って被害者と激しく対立していた。',
+            isRevealed: false
+          },
+          {
+            id: 'char-4',
+            name: '山田美咲',
+            role: '被害者の妻',
+            description: '被害者の妻。最近夫との関係が冷え込んでいた。',
+            alibi: '事件発生時は実家に帰っていたと主張している。',
+            motive: '夫の浮気を疑っており、離婚を考えていた。',
+            isRevealed: false
+          },
+          {
+            id: 'char-5',
+            name: '高橋健一',
+            role: '元同僚',
+            description: '被害者の元同僚。リストラで恨みを持っている。',
+            alibi: '事件発生時は自宅で一人で過ごしていたと主張している。',
+            motive: '被害者によってリストラされ、生活が困窮していた。',
+            isRevealed: false
+          },
+          {
+            id: 'char-6',
+            name: '小林刑事',
+            role: '刑事',
+            description: '事件を担当する刑事。冷静で的確な推理力を持つ。',
+            alibi: '事件発生時は警察署にいた。',
+            motive: '事件の真相を解明することが使命。',
+            isRevealed: false
+          }
+        ];
+
         const gameState: GameState = {
           id: `game_${Date.now()}`,
           roomId,
@@ -84,7 +142,7 @@ export const useGameStore = create<GameStore>()(
           maxTime: 300,
           isPaused: false,
           evidence: [],
-          characters: [],
+          characters: demoCharacters,
           votes: [],
           gameStartedAt: new Date()
         };

@@ -20,9 +20,60 @@ export const demoScenarios: Scenario[] = [
     difficulty: 'beginner',
     content: {
       characters: [
-        { id: 'char-1', name: '田中太郎', description: '被害者の隣人', role: '容疑者A', isSuspect: true },
-        { id: 'char-2', name: '佐藤花子', description: '被害者の友人', role: '容疑者B', isSuspect: true },
-        { id: 'char-3', name: '鈴木一郎', description: '被害者の同僚', role: '容疑者C', isSuspect: true },
+        { 
+          id: 'char-1', 
+          name: '田中太郎', 
+          description: '被害者の隣人。普段は穏やかな性格だが、最近被害者とトラブルがあった。', 
+          role: '容疑者A', 
+          isSuspect: true,
+          alibi: '事件発生時は自宅でテレビを見ていたと主張している。',
+          motive: '被害者との騒音トラブルで激しい口論があった。'
+        },
+        { 
+          id: 'char-2', 
+          name: '佐藤花子', 
+          description: '被害者の友人。最近被害者と金銭トラブルがあった。', 
+          role: '容疑者B', 
+          isSuspect: true,
+          alibi: '事件発生時は友人と電話で話していたと主張している。',
+          motive: '被害者に多額の借金があり、返済を迫られていた。'
+        },
+        { 
+          id: 'char-3', 
+          name: '鈴木一郎', 
+          description: '被害者の同僚。職場での昇進を巡って対立していた。', 
+          role: '容疑者C', 
+          isSuspect: true,
+          alibi: '事件発生時は職場で残業していたと主張している。',
+          motive: '昇進の座を巡って被害者と激しく対立していた。'
+        },
+        { 
+          id: 'char-4', 
+          name: '山田美咲', 
+          description: '被害者の妻。最近夫との関係が冷え込んでいた。', 
+          role: '被害者の妻', 
+          isSuspect: true,
+          alibi: '事件発生時は実家に帰っていたと主張している。',
+          motive: '夫の浮気を疑っており、離婚を考えていた。'
+        },
+        { 
+          id: 'char-5', 
+          name: '高橋健一', 
+          description: '被害者の元同僚。リストラで恨みを持っている。', 
+          role: '元同僚', 
+          isSuspect: true,
+          alibi: '事件発生時は自宅で一人で過ごしていたと主張している。',
+          motive: '被害者によってリストラされ、生活が困窮していた。'
+        },
+        { 
+          id: 'char-6', 
+          name: '小林刑事', 
+          description: '事件を担当する刑事。冷静で的確な推理力を持つ。', 
+          role: '刑事', 
+          isSuspect: false,
+          alibi: '事件発生時は警察署にいた。',
+          motive: '事件の真相を解明することが使命。'
+        },
       ],
       timeline: [
         { id: 'event-1', time: '20:00', description: '被害者が帰宅', location: 'マンション', involvedCharacters: ['char-1'] },
