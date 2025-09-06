@@ -33,12 +33,22 @@ const GamePage: React.FC = () => {
 
   // ゲーム初期化
   useEffect(() => {
-    if (!roomId || !user || !currentRoom) return;
+    console.log('GamePage初期化チェック:', { roomId, user: !!user, currentRoom: !!currentRoom });
+    
+    if (!roomId || !user || !currentRoom) {
+      console.log('初期化条件が満たされていません:', { roomId, user: !!user, currentRoom: !!currentRoom });
+      return;
+    }
 
     // デモ用のゲーム初期化
     const scenario = demoScenarios.find(s => s.id === currentRoom.scenarioId);
+    console.log('シナリオ検索結果:', { scenarioId: currentRoom.scenarioId, scenario: !!scenario });
+    
     if (scenario) {
+      console.log('ゲーム初期化を実行します');
       initializeGame(roomId, currentRoom.scenarioId, currentRoom.currentPlayers);
+    } else {
+      console.log('シナリオが見つかりません');
     }
 
     return () => {
@@ -97,6 +107,14 @@ const GamePage: React.FC = () => {
         <Card className="max-w-md mx-auto text-center">
           <CardContent>
             <h2 className="text-xl font-bold text-accent-500 mb-4">ゲームを読み込み中...</h2>
+            <div className="text-sm text-mystery-400 space-y-2">
+              <p>デバッグ情報:</p>
+              <p>roomId: {roomId || 'なし'}</p>
+              <p>user: {user ? 'ログイン済み' : '未ログイン'}</p>
+              <p>currentRoom: {currentRoom ? 'あり' : 'なし'}</p>
+              <p>WebSocket: {isConnected ? '接続中' : '切断中'}</p>
+              {connectionError && <p className="text-red-400">エラー: {connectionError}</p>}
+            </div>
           </CardContent>
         </Card>
       </div>
