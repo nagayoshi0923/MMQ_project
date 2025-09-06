@@ -146,6 +146,29 @@ src/
 
 ---
 
+### 2024年12月6日 - エラー修正
+
+#### 発生したエラー
+1. **react-error-boundaryパッケージ不足**: App.tsxで使用しているがインストールされていない
+2. **border-borderクラス未定義**: Tailwind CSSで存在しないクラスを使用
+3. **manifest.json 404エラー**: PWA用のマニフェストファイルが存在しない
+
+#### 修正内容
+1. **パッケージインストール**: `npm install react-error-boundary`
+2. **CSS修正**: `border-border`を`border-mystery-600`に変更
+3. **PWAファイル作成**: `public/manifest.json`と`public/vite.svg`を作成
+
+#### 学んだこと
+- 依存関係の管理の重要性
+- Tailwind CSSのカスタムクラス定義の必要性
+- PWA対応時のファイル構造の重要性
+
+#### 修正後の状況
+- 開発サーバーが正常に起動
+- エラーが解消され、アプリケーションが表示可能
+
+---
+
 ## 開発のベストプラクティス
 
 ### コミットメッセージの規則
