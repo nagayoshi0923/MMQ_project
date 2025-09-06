@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 import Card, { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuthStore } from '@/stores/authStore';
+import { demoScenarios, demoGameRoom } from '@/lib/demoData';
 
 const LobbyPage: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +12,14 @@ const LobbyPage: React.FC = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleScenarioClick = (scenarioId: string) => {
+    navigate(`/scenario/${scenarioId}`);
+  };
+
+  const handleJoinRoom = () => {
+    navigate(`/room/${demoGameRoom.id}`);
   };
 
   return (
@@ -39,18 +48,29 @@ const LobbyPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <Card variant="outlined" className="p-4 hover:bg-mystery-700/50 transition-colors cursor-pointer">
-                  <h3 className="font-semibold text-mystery-100">マンション事件</h3>
-                  <p className="text-sm text-mystery-300">初級 | 4-6人 | 60分</p>
-                </Card>
-                <Card variant="outlined" className="p-4 hover:bg-mystery-700/50 transition-colors cursor-pointer">
-                  <h3 className="font-semibold text-mystery-100">豪華客船の謎</h3>
-                  <p className="text-sm text-mystery-300">中級 | 6-8人 | 90分</p>
-                </Card>
-                <Card variant="outlined" className="p-4 hover:bg-mystery-700/50 transition-colors cursor-pointer">
-                  <h3 className="font-semibold text-mystery-100">古城の呪い</h3>
-                  <p className="text-sm text-mystery-300">上級 | 8-10人 | 120分</p>
-                </Card>
+                {demoScenarios.map((scenario) => (
+                  <Card 
+                    key={scenario.id}
+                    variant="outlined" 
+                    className="p-4 hover:bg-mystery-700/50 transition-colors cursor-pointer"
+                    onClick={() => handleScenarioClick(scenario.id)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold text-mystery-100">{scenario.title}</h3>
+                        <p className="text-sm text-mystery-300">
+                          {scenario.difficulty === 'beginner' ? '初級' : 
+                           scenario.difficulty === 'intermediate' ? '中級' : '上級'} | 
+                          {scenario.playerCount}人 | {scenario.estimatedTime}分
+                        </p>
+                        <p className="text-xs text-mystery-400 mt-1">{scenario.description}</p>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        詳細 →
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -64,15 +84,28 @@ const LobbyPage: React.FC = () => {
             <CardContent>
               <div className="space-y-3">
                 <Card variant="outlined" className="p-4">
-                  <h3 className="font-semibold text-mystery-100">デモルーム</h3>
-                  <p className="text-sm text-mystery-300">マンション事件 | 4/6人 | 待機中</p>
-                  <Button className="mt-2 w-full" size="sm">
-                    参加
-                  </Button>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-mystery-100">{demoGameRoom.name}</h3>
+                      <p className="text-sm text-mystery-300">
+                        マンション事件 | 4/6人 | 待機中
+                      </p>
+                      <p className="text-xs text-mystery-400 mt-1">
+                        ルームコード: {demoGameRoom.roomCode}
+                      </p>
+                    </div>
+                    <Button 
+                      className="mt-2" 
+                      size="sm"
+                      onClick={handleJoinRoom}
+                    >
+                      参加
+                    </Button>
+                  </div>
                 </Card>
               </div>
-              <Button variant="secondary" className="w-full mt-4">
-                新しいルームを作成
+              <Button variant="secondary" className="w-full mt-4" disabled>
+                新しいルームを作成（未実装）
               </Button>
             </CardContent>
           </Card>
